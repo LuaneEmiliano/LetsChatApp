@@ -8,9 +8,6 @@
 import SwiftUI
 import SDWebImageSwiftUI
 
-struct ChatUser {
-    let uid, email, profileImageUrl: String
-}
 
 class MainMessageViewModel: ObservableObject {
     
@@ -18,10 +15,13 @@ class MainMessageViewModel: ObservableObject {
     @Published var chatUser: ChatUser?
     
     init() {
+        DispatchQueue.main.async {
+            self.isUserCurrentlyLoggedOut = FirebaseManager.shared.auth.currentUser?.uid == nil
+        }
         fecthCurrentUser()
     }
     
-    private func fecthCurrentUser() {
+     func fecthCurrentUser() {
         
         guard let uid = FirebaseManager.shared.auth.currentUser?.uid
         else {
@@ -43,13 +43,15 @@ class MainMessageViewModel: ObservableObject {
                     return
                     
                 }
-                let uid = data["uid"] as? String ?? ""
-                let email = data["email"] as? String ?? ""
-                let profileImageUrl = data["profileImageUrl"] as? String ?? ""
-                self.chatUser = ChatUser(uid: uid, email: email.replacingOccurrences(of: "@gmail.com", with: ""), profileImageUrl: profileImageUrl)
-             
-            }
+                self.chatUser = .init(data: data)
+              }
         }
+    @Published var isUserCurrentlyLoggedOut = false
+    
+    func handleSignOut() {
+        isUserCurrentlyLoggedOut.toggle()
+      try? FirebaseManager.shared.auth.signOut()
+    }
 }
 
 struct MainMessageView: View {
@@ -117,9 +119,16 @@ struct MainMessageView: View {
                     Text("What do you want to do?"), buttons: [
                         .destructive(Text("Sign Out"),action: {
                             print("handle sign out")
+                            vm.handleSignOut()
                         }),
                         .cancel()
                     ])
+        }
+        .fullScreenCover(isPresented:$vm.isUserCurrentlyLoggedOut , onDismiss: nil) {
+            LoginView(didCompleteLoginProcess: {
+                self.vm.isUserCurrentlyLoggedOut = false
+                self.vm.fecthCurrentUser()
+            } )
         }
     }
     private var messagesView: some View {

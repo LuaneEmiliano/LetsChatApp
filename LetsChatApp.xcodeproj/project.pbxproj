@@ -12,6 +12,7 @@
 		6B18F23928807EFA0061B3CF /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 6B18F23828807EFA0061B3CF /* FirebaseFirestore */; };
 		6B18F23B28807EFA0061B3CF /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 6B18F23A28807EFA0061B3CF /* FirebaseStorage */; };
 		6B18F24128808F9C0061B3CF /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 6B18F24028808F9C0061B3CF /* SDWebImageSwiftUI */; };
+		6B18F2442880B4500061B3CF /* ChatUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B18F2432880B4500061B3CF /* ChatUser.swift */; };
 		6B8B2191287F646D0044B6BA /* LetsChatAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B8B2190287F646D0044B6BA /* LetsChatAppApp.swift */; };
 		6B8B2193287F646D0044B6BA /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B8B2192287F646D0044B6BA /* LoginView.swift */; };
 		6B8B2195287F646D0044B6BA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6B8B2194287F646D0044B6BA /* Assets.xcassets */; };
@@ -23,6 +24,7 @@
 
 /* Begin PBXFileReference section */
 		6B18F2332880746C0061B3CF /* FirebaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
+		6B18F2432880B4500061B3CF /* ChatUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatUser.swift; sourceTree = "<group>"; };
 		6B8B218D287F646D0044B6BA /* LetsChatApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LetsChatApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6B8B2190287F646D0044B6BA /* LetsChatAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LetsChatAppApp.swift; sourceTree = "<group>"; };
 		6B8B2192287F646D0044B6BA /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -51,16 +53,25 @@
 		6B18F230288074380061B3CF /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				6B8B2190287F646D0044B6BA /* LetsChatAppApp.swift */,
 				6B18F2332880746C0061B3CF /* FirebaseManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
 		};
+		6B18F2422880B41D0061B3CF /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				6B18F2432880B4500061B3CF /* ChatUser.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		6B8B2184287F646D0044B6BA = {
 			isa = PBXGroup;
 			children = (
+				6B18F2422880B41D0061B3CF /* Model */,
 				6B18F230288074380061B3CF /* Services */,
-				6B8B2190287F646D0044B6BA /* LetsChatAppApp.swift */,
 				6B8B21AF28805CF20044B6BA /* Views */,
 				6B8B218F287F646D0044B6BA /* LetsChatApp */,
 				6B8B218E287F646D0044B6BA /* Products */,
@@ -192,6 +203,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6B18F2442880B4500061B3CF /* ChatUser.swift in Sources */,
 				6B8B21A6287F80520044B6BA /* ImagePicker.swift in Sources */,
 				6B8B21B228805D700044B6BA /* MainMessageView.swift in Sources */,
 				6B18F2342880746C0061B3CF /* FirebaseManager.swift in Sources */,
