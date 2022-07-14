@@ -10,24 +10,6 @@ import Firebase
 import FirebaseStorage
 import FirebaseFirestore
 
-class FirebaseManager: NSObject {
-    
-    let auth: Auth
-    let storage: Storage
-    let firestore: Firestore
-    
-    static let shared = FirebaseManager()
-    
-    override init() {
-        FirebaseApp.configure()
-        
-        self.auth = Auth.auth()
-        self.storage = Storage.storage()
-        self.firestore = Firestore.firestore()
-        
-        super.init()
-    }
-}
 
 struct LoginView: View {
     
@@ -50,40 +32,41 @@ struct LoginView: View {
                         Text("Create Account")
                             .tag(false)
                     }.pickerStyle(SegmentedPickerStyle())
-                    
-                    
-                    if isLoginMode {
+                        
+                    if !isLoginMode {
                         Button {
                             shouldShowImagePicker.toggle()
                         } label: {
                             
                             VStack {
-                                
                                 if let image = self.image {
                                     Image(uiImage: image)
                                         .resizable()
-                                        .frame(width: 64, height: 64)
                                         .scaledToFill()
+                                        .frame(width: 128, height: 128)
                                         .cornerRadius(64)
                                 } else {
                                     Image(systemName: "person.fill")
-                                        .font(.system(size: 70))
+                                        .font(.system(size: 64))
                                         .padding()
                                         .foregroundColor(Color(.label))
                                 }
                             }
                             .overlay(RoundedRectangle(cornerRadius: 64)
                                         .stroke(Color.black, lineWidth: 3)
-                                     )
+                            )
+                            
                         }
                     }
                     
-                    TextField("Email", text: $email)
-                        .keyboardType(.emailAddress)
-                        .autocapitalization(.none)
-                        .padding(12)                   .background(Color.white)
-                    SecureField("Password", text: $password)
-                        .padding(12)                 .background(Color.white)
+                    Group {
+                        TextField("Email", text: $email)
+                            .keyboardType(.emailAddress)
+                            .autocapitalization(.none)
+                        SecureField("Password", text: $password)
+                    }
+                    .padding(12)
+                    .background(Color.white)
                     
                     Button {
                         handleAction()
@@ -93,23 +76,25 @@ struct LoginView: View {
                             Text(isLoginMode ? "Log In" : "Create Account")
                                 .foregroundColor(.white)
                                 .padding(.vertical, 10)
+                                .font(.system(size: 14, weight: .semibold))
                             Spacer()
                         }.background(Color.blue)
+                        
                     }
                     
                     Text(self.loginStatusMessage)
                         .foregroundColor(.red)
                 }
                 .padding()
+                
             }
-            .navigationTitle(isLoginMode ? "Login" : "Create Account")
-            .background(Color(.init(white: 0, alpha: 0.05)))
-            
+            .navigationTitle(isLoginMode ? "Log In" : "Create Account")
+            .background(Color(.init(white: 0, alpha: 0.05))
+                            .ignoresSafeArea())
         }
         .navigationViewStyle(StackNavigationViewStyle())
         .fullScreenCover(isPresented: $shouldShowImagePicker, onDismiss: nil) {
-            ImagePicker(image: $image )
-            
+            ImagePicker(image: $image)
         }
     }
     
@@ -171,11 +156,28 @@ struct LoginView: View {
                     return
                 }
                 self.loginStatusMessage = "Successfully stored image with url: \(url?.absoluteString ?? "")"
-          
+                print(url?.absoluteString)
+                
+                guard let url = url else { return }
+                self.storeUserInformation(imageProfileUrl: url)
                 
             }
         }
         
+    }
+    private func storeUserInformation(imageProfileUrl: URL) {
+        guard let uid = FirebaseManager.shared.auth.currentUser?.uid else {
+            return   }
+        let userData = ["email": self.email, "uid": uid, ]
+        FirebaseManager.shared.firestore.collection("users")
+            .document(uid).setData(userData) { err in
+                if let err = err {
+                    print(err)
+                    self.loginStatusMessage = "\(err)"
+                    return
+                }
+                print("Success")
+            }
     }
     
 }
