@@ -135,37 +135,42 @@ struct MainMessageView: View {
         ScrollView {
             ForEach(0..<10, id: \.self) { num in
                 VStack {
-                    HStack(spacing: 16) {
-                        Image(systemName: "person.fill")
-                            .font(.system(size: 32))
-                            .padding(8)
-                            .overlay(RoundedRectangle(cornerRadius: 44)
-                                        .stroke(Color(.label), lineWidth: 1)
-                            )
-                        VStack(alignment: .leading) {
-                            Text("Username")
-                                .font(.system(size: 16, weight:.bold))
+                    NavigationLink {
+                        Text("Destination")
+                    } label: {
+                        HStack(spacing: 16) {
+                            Image(systemName: "person.fill")
+                                .font(.system(size: 32))
+                                .padding(8)
+                                .overlay(RoundedRectangle(cornerRadius: 44)
+                                            .stroke(Color(.label), lineWidth: 1)
+                                )
+                            VStack(alignment: .leading) {
+                                Text("Username")
+                                    .font(.system(size: 16, weight:.bold))
+                                
+                                Text("Message sent to user")
+                                    .font(.system(size: 14))
+                                    .foregroundColor(Color(.lightGray))
+                            }
+                            Spacer()
                             
-                            Text("Message sent to user")
-                                .font(.system(size: 14))
-                                .foregroundColor(Color(.lightGray))
-                        }
-                        Spacer()
-                        
-                        Text("22d")
-                            .font(.system(size: 14, weight:.semibold))
-                        
+                            Text("22d")
+                                .font(.system(size: 14, weight:.semibold))
                     }
+                }
                     Divider()
                         .padding(.vertical, 8)
                 }.padding(.horizontal)
             }.padding(.bottom, 50)
         }
     }
+    @State var shouldShowNewMessageScreen = false
+    
     
     private var newMessageButton: some View {
         Button {
-            
+            shouldShowNewMessageScreen.toggle()
         } label: {
             HStack {
                 Spacer()
@@ -180,7 +185,14 @@ struct MainMessageView: View {
             .padding(.horizontal)
             .shadow(radius: 15)
         }
+        .fullScreenCover(isPresented: $shouldShowNewMessageScreen) {
+            CreateNewMessageView(didSelectNewUser: { user in
+                print(user.email)
+                self.chatUser = user
+            })
+        }
     }
+    @State var chatUser: ChatUser?
 }
 
 struct MainMessageView_Previews: PreviewProvider {
