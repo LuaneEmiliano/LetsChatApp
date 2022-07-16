@@ -15,13 +15,13 @@ struct LoginView: View {
     
     let didCompleteLoginProcess: () -> ()
     
-    @State private var isLoginMode = false
-    @State private var email = ""
-    @State private var password = ""
+    @State  var isLoginMode = false
+    @State var email = ""
+    @State  var password = ""
     
-    @State private var loginStatusMessage = ""
-    @State private var  shouldShowImagePicker = false
-    @State private var image: UIImage?
+    @State var loginStatusMessage = ""
+    @State var  shouldShowImagePicker = false
+    @State  var image: UIImage?
     
     var body: some View {
         NavigationView {
@@ -34,7 +34,7 @@ struct LoginView: View {
                         Text("Create Account")
                             .tag(false)
                     }.pickerStyle(SegmentedPickerStyle())
-                        
+                    
                     if !isLoginMode {
                         Button {
                             shouldShowImagePicker.toggle()
@@ -97,16 +97,17 @@ struct LoginView: View {
         .navigationViewStyle(StackNavigationViewStyle())
         .fullScreenCover(isPresented: $shouldShowImagePicker, onDismiss: nil) {
             ImagePicker(image: $image)
+                .ignoresSafeArea()
         }
     }
     
- private func handleAction() {
+    private func handleAction() {
         if isLoginMode {
-            print("Should log into Firebase with existing credentials")
+            //            print("Should log into Firebase with existing credentials")
             loginUser()
         } else {
             createNewAccount()
-//            print("Register a new account inside of the Firebase")
+            //            print("Register a new account inside of the Firebase")
         }
     }
     
@@ -127,9 +128,9 @@ struct LoginView: View {
     }
     
     private func createNewAccount() {
-      if  self.image == nil {
-          self.loginStatusMessage = "You must select an avatar image"
-          return
+        if  self.image == nil {
+            self.loginStatusMessage = "You must select an avatar image"
+            return
         }
         FirebaseManager.shared.auth.createUser(withEmail: email, password: password) {
             result, err in
@@ -144,11 +145,10 @@ struct LoginView: View {
             
             self.persistImageToStorage()
         }
-        
     }
     
     private func persistImageToStorage() {
-    guard let uid = FirebaseManager.shared.auth.currentUser?.uid
+        guard let uid = FirebaseManager.shared.auth.currentUser?.uid
         else {return}
         let ref = FirebaseManager.shared.storage.reference(withPath: uid)
         guard let imageData = self.image?.jpegData(compressionQuality: 0.5) else {return}
@@ -164,20 +164,19 @@ struct LoginView: View {
                     return
                 }
                 self.loginStatusMessage = "Successfully stored image with url: \(url?.absoluteString ?? "")"
-                print(url?.absoluteString)
+                print(url?.absoluteString ?? "")
                 
                 guard let url = url else { return }
                 self.storeUserInformation(imageProfileUrl: url)
                 
             }
         }
-        
     }
     private func storeUserInformation(imageProfileUrl: URL) {
         guard let uid = FirebaseManager.shared.auth.currentUser?.uid else {
             return   }
-        let userData = ["email": self.email, "uid": uid, ]
-        FirebaseManager.shared.firestore.collection("users")
+        let userData = [FirebaseConstants.email: self.email, FirebaseConstants.uid: uid, FirebaseConstants.profileImageUrl: imageProfileUrl.absoluteString]
+        FirebaseManager.shared.firestore.collection(FirebaseConstants.users)
             .document(uid).setData(userData) { err in
                 if let err = err {
                     print(err)
@@ -188,9 +187,8 @@ struct LoginView: View {
                 
                 self.didCompleteLoginProcess()
             }
+        }
     }
-    
-}
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {

@@ -30,9 +30,10 @@ class CreateNewMessageViewModel: ObservableObject {
                     if user.uid !=
                         FirebaseManager.shared.auth.currentUser?.uid {
                         self.users.append(.init(data: data))
+              
                     }
-              })
-         }
+                })
+            }
     }
 }
 
@@ -62,35 +63,34 @@ struct CreateNewMessageView: View {
                                 .clipped()
                                 .cornerRadius(50)
                                 .overlay(RoundedRectangle(cornerRadius: 50)
-                                .stroke(Color(.label), lineWidth: 2)
+                                            .stroke(Color(.label), lineWidth: 2)
                                 )
                             Text(user.email)
                                 .foregroundColor(Color(.label))
                             Spacer()
                         }.padding(.horizontal)
                     }
-                        Divider()
+                    Divider()
                         .padding(.vertical, 8)
-                    }
+                }
             }.navigationTitle("New Message")
                 .toolbar {
                     ToolbarItemGroup(placement:
-                      .navigationBarLeading) {
+                                            .navigationBarLeading) {
                         Button  {
                             presentationMode.wrappedValue.dismiss()
                         } label: {
                             Text("Cancel")
-                        }
-                        
                     }
                 }
+            }
         }
     }
 }
 
 struct CreateNewMessageView_Previews: PreviewProvider {
     static var previews: some View {
-//  CreateNewMessageView()
-        MainMessageView()
+        //  CreateNewMessageView()
+        MainMessagesView()
     }
 }

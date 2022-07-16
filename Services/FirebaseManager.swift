@@ -13,7 +13,9 @@ class FirebaseManager: NSObject {
     
     let auth: Auth
     let storage: Storage
-    let firestore: Firestore
+    let firestore:Firestore
+    
+    var currentUser: ChatUser?
     
     static let shared = FirebaseManager()
     
